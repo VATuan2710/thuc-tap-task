@@ -1,0 +1,88 @@
+/* Reset default styles */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB',
+    'Microsoft YaHei', 'Helvetica Neue', Helvetica, Arial, sans-serif, 'Apple Color Emoji',
+    'Segoe UI Emoji', 'Segoe UI Symbol';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#root {
+  width: 100%;
+  min-height: 100vh;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .ant-card {
+    margin: 8px !important;
+    border-radius: 8px !important;
+  }
+  
+  .ant-card-body {
+    padding: 16px !important;
+  }
+  
+  .ant-input-group-compact .ant-input {
+    font-size: 14px !important;
+  }
+  
+  .ant-btn {
+    font-size: 14px !important;
+  }
+  
+  /* Stack filter and sort vertically on mobile */
+  .ant-col-xs-24 {
+    margin-bottom: 8px;
+  }
+  
+  .ant-col-xs-24:last-child {
+    margin-bottom: 0;
+  }
+}
+
+/* Animation for todo items */
+.todo-item-enter {
+  opacity: 0;
+  transform: translateY(-10px);
+}
+
+.todo-item-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 300ms, transform 300ms;
+}
+
+.todo-item-exit {
+  opacity: 1;
+}
+
+.todo-item-exit-active {
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: opacity 300ms, transform 300ms;
+}
