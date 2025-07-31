@@ -13,7 +13,7 @@ export interface CartItem {
   id: string;
   product: Product;
   quantity: number;
-  addedAt: Date;
+  addedAt: string; // ISO string for serialization
 }
 
 export interface CartState {

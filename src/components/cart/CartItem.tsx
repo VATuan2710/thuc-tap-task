@@ -130,7 +130,7 @@ const CartItem: React.FC<CartItemProps> = ({ item }) => {
       {item.quantity >= item.product.stock && (
         <div style={{ marginTop: '8px', paddingTop: '8px', borderTop: '1px solid #f0f0f0' }}>
           <Text type="warning" style={{ fontSize: '12px' }}>
-            ⚠️ Bạn đã chọn tối đa số lượng có sẵn ({item.product.stock})
+            Bạn đã chọn tối đa số lượng có sẵn ({item.product.stock})
           </Text>
         </div>
       )}
@@ -138,7 +138,7 @@ const CartItem: React.FC<CartItemProps> = ({ item }) => {
       {/* Added Date */}
       <div style={{ marginTop: '8px', textAlign: 'right' }}>
         <Text type="secondary" style={{ fontSize: '11px' }}>
-          Thêm vào: {item.addedAt.toLocaleDateString('vi-VN')} {item.addedAt.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })}
+          Thêm vào: {new Date(item.addedAt).toLocaleDateString('vi-VN')} {new Date(item.addedAt).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })}
         </Text>
       </div>
     </Card>

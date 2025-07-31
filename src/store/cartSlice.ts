@@ -1,6 +1,5 @@
-import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, type PayloadAction, createSelector } from "@reduxjs/toolkit";
 import type { CartState, CartItem, Product } from "../types/cart";
-import { cacheUtils } from "../utils/cacheUtils";
 
 // Calculate totals helper function
 const calculateTotals = (items: CartItem[]) => {
@@ -26,33 +25,13 @@ const cartSlice = createSlice({
   name: "cart",
   initialState,
   reducers: {
-    // Load cart from cache
-    loadCartFromCache: (state) => {
-      state.isLoading = true;
-      try {
-        const savedItems = cacheUtils.loadCart("localStorage");
-        state.items = savedItems;
-        const totals = calculateTotals(savedItems);
-        state.totalQuantity = totals.totalQuantity;
-        state.totalAmount = totals.totalAmount;
-        state.error = null;
-
-        console.log(`Loaded ${savedItems.length} items from localStorage`);
-      } catch (error) {
-        state.error = "Failed to load cart from cache";
-        console.error("Error loading cart:", error);
-      } finally {
-        state.isLoading = false;
-      }
-    },
-
     // Add item to cart
     addToCart: (
       state,
       action: PayloadAction<{ product: Product; quantity?: number }>
     ) => {
       const { product, quantity = 1 } = action.payload;
-
+      
       const existingItemIndex = state.items.findIndex(
         (item) => item.product.id === product.id
       );
@@ -65,13 +44,12 @@ const cartSlice = createSlice({
           return;
         }
       } else {
-        // Add new item if quantity is within stock
         if (quantity <= product.stock) {
           const newItem: CartItem = {
             id: `${product.id}-${Date.now()}`,
             product,
             quantity,
-            addedAt: new Date(),
+            addedAt: new Date().toISOString(), // Convert to ISO string for serialization
           };
           state.items.push(newItem);
         } else {
@@ -86,23 +64,19 @@ const cartSlice = createSlice({
       state.totalAmount = totals.totalAmount;
       state.error = null;
 
-      cacheUtils.saveCart(state.items, "localStorage");
-      console.log(
-        `Cart saved to localStorage - Total items: ${state.totalQuantity}`
-      );
+
     },
 
     // Remove item from cart
     removeFromCart: (state, action: PayloadAction<{ itemId: string }>) => {
       const { itemId } = action.payload;
-      state.items = state.items.filter((item) => item.id !== itemId);
+      state.items = state.items.filter((item: CartItem) => item.id !== itemId);
 
       // Recalculate totals
       const totals = calculateTotals(state.items);
       state.totalQuantity = totals.totalQuantity;
       state.totalAmount = totals.totalAmount;
 
-      cacheUtils.saveCart(state.items, "localStorage");
       console.log(`Item removed - Total items: ${state.totalQuantity}`);
     },
 
@@ -138,8 +112,6 @@ const cartSlice = createSlice({
       state.totalQuantity = totals.totalQuantity;
       state.totalAmount = totals.totalAmount;
 
-      // Save to cache
-      cacheUtils.saveCart(state.items, "localStorage");
       console.log(`Quantity updated - Total items: ${state.totalQuantity}`);
     },
 
@@ -150,8 +122,7 @@ const cartSlice = createSlice({
       state.totalAmount = 0;
       state.error = null;
 
-      cacheUtils.clearCart("localStorage");
-      console.log(`Cart cleared from localStorage`);
+      console.log(`Cart cleared`);
     },
 
     // Clear error
@@ -167,7 +138,6 @@ const cartSlice = createSlice({
 });
 
 export const {
-  loadCartFromCache,
   addToCart,
   removeFromCart,
   updateQuantity,
@@ -189,18 +159,21 @@ export const selectCartIsLoading = (state: { cart: CartState }) =>
 export const selectCartError = (state: { cart: CartState }) => state.cart.error;
 
 // Computed selectors
-export const selectCartSummary = (state: { cart: CartState }) => {
-  const { totalAmount, totalQuantity } = state.cart;
-  const subtotal = totalAmount;
-  const tax = Math.round(subtotal * 0.1);
-  const shipping = totalQuantity > 0 ? (subtotal > 50000000 ? 0 : 500000) : 0; // Free shipping over 50M VND
-  const total = subtotal + tax + shipping;
+export const selectCartSummary = createSelector(
+  [(state: { cart: CartState }) => state.cart.totalAmount, 
+   (state: { cart: CartState }) => state.cart.totalQuantity],
+  (totalAmount, totalQuantity) => {
+    const subtotal = totalAmount;
+    const tax = Math.round(subtotal * 0.1);
+    const shipping = totalQuantity > 0 ? (subtotal > 50000000 ? 0 : 500000) : 0; // Free shipping over 50M VND
+    const total = subtotal + tax + shipping;
 
-  return {
-    subtotal,
-    tax,
-    shipping,
-    total,
-    itemCount: totalQuantity,
-  };
-};
+    return {
+      subtotal,
+      tax,
+      shipping,
+      total,
+      itemCount: totalQuantity,
+    };
+  }
+);

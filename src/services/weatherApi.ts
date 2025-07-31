@@ -375,12 +375,10 @@ export const weatherApi = {
     // Calculate estimated rain amount from weather data
     let totalRainAmount = 0;
     next24Hours.forEach(item => {
-      // OpenWeatherMap sometimes includes rain volume data
       if (item.rain && item.rain['3h']) {
         totalRainAmount += item.rain['3h'];
       } else if (item.pop > 0.3) {
-        // Estimate based on probability if no rain data
-        totalRainAmount += item.pop * 2; // Conservative estimate
+        totalRainAmount += item.pop * 2; 
       }
     });
     

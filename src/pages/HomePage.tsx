@@ -123,7 +123,7 @@ const HomePage: React.FC = () => {
                     Shopping Cart
                   </Title>
                   <Paragraph style={{ margin: 0, color: "#666" }}>
-                    Mua sắm với Redux + Cookies
+                    Mua sắm 
                   </Paragraph>
                 </Space>
               </Card>

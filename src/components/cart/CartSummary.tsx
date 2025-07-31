@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, Button, Divider, Typography, Space, Alert, Empty } from 'antd';
+import { Card, Button, Divider, Typography, Space, Alert } from 'antd';
 import { ShoppingOutlined, CreditCardOutlined, GiftOutlined } from '@ant-design/icons';
 import { useSelector, useDispatch } from 'react-redux';
 import { selectCartSummary, selectCartItems, selectCartTotalQuantity, clearCart } from '../../store/cartSlice';
@@ -12,34 +12,21 @@ const CartSummary: React.FC = () => {
   const cartSummary = useSelector(selectCartSummary);
   const cartItems = useSelector(selectCartItems);
   const totalQuantity = useSelector(selectCartTotalQuantity);
+  
+
 
   const handleCheckout = () => {
     // Simulate checkout process
     alert(`Thanh toán thành công! 
 Tổng: ${formatPrice(cartSummary.total)}
 Số lượng: ${cartSummary.itemCount} sản phẩm
-Cảm ơn bạn đã mua hàng! 🎉`);
+Cảm ơn bạn đã mua hàng!`);
     
     // Clear cart after successful checkout
     dispatch(clearCart());
   };
 
-  if (cartItems.length === 0) {
-    return (
-      <Card>
-        <Empty
-          image={<ShoppingOutlined style={{ fontSize: '48px', color: '#d9d9d9' }} />}
-          description={
-            <span>
-              Giỏ hàng trống
-              <br />
-              <Text type="secondary">Hãy thêm sản phẩm vào giỏ hàng</Text>
-            </span>
-          }
-        />
-      </Card>
-    );
-  }
+
 
   return (
     <Card 
@@ -127,7 +114,7 @@ Cảm ơn bạn đã mua hàng! 🎉`);
         {/* Payment Methods */}
         <div style={{ textAlign: 'center', marginTop: '12px' }}>
           <Text type="secondary" style={{ fontSize: '12px' }}>
-            💳 Hỗ trợ: Visa, MasterCard, Momo, ZaloPay
+           Hỗ trợ: Visa, MasterCard, Momo, ZaloPay
           </Text>
         </div>
 
@@ -139,7 +126,7 @@ Cảm ơn bạn đã mua hàng! 🎉`);
           border: '1px solid #b7eb8f'
         }}>
           <Text style={{ fontSize: '11px', color: '#389e0d' }}>
-            🔒 Thanh toán an toàn với mã hóa SSL 256-bit
+            Thanh toán an toàn với mã hóa SSL 256-bit
           </Text>
         </div>
       </Space>
